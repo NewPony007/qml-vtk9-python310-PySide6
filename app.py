@@ -9,9 +9,9 @@ from PySide6.QtQml import QQmlApplicationEngine, qmlRegisterType
 from PySide6.QtWidgets import QApplication
 import vtk
 
-from src.graphics.engines import Fbo
-from src.ctrls import MainCtrl
-from src.utils import *
+from fbo import Fbo
+from funcs import getQmlObject, setDefaultSurfaceFormat, exceptHook
+from mainCtrl import MainCtrl
 
 logging.basicConfig(filename="log.ini", level=logging.DEBUG)
 
@@ -24,20 +24,6 @@ def setVtkLog():
     ow.SetInstance(fow)
 
 
-def registerCustomQml():
-    qmlRegisterType(Fbo, "QmlVtk", 1, 0, "Fbo")
-
-
-def compileQml():
-    from src.utils import compileResourceFiles
-
-    compileResourceFiles(rcDir="src/views", outDir="src/views")
-    if os.path.isfile(os.path.join("src/views/rc_qml.py")):
-        from src.views.rc_qml import qInitResources
-
-        qInitResources()
-
-
 class App(QApplication):
     def __init__(self, sys_argv):
         if sys.platform == "win32":
@@ -45,7 +31,9 @@ class App(QApplication):
         elif sys.platform == "linux":
             sys_argv += ["-style", "Fusion"]  # ! MUST HAVE
         super(App, self).__init__(sys_argv)
+
         self.engine = QQmlApplicationEngine()
+
         self.__mainCtrl = MainCtrl(self.engine)
 
     def setup(self):
@@ -57,8 +45,7 @@ class App(QApplication):
 
 
 def main():
-    registerCustomQml()
-    compileQml()
+    qmlRegisterType(Fbo, "QmlVtk", 1, 0, "Fbo")
     QSurfaceFormat.setDefaultFormat(setDefaultSurfaceFormat(False))
 
     app = App(sys.argv)
