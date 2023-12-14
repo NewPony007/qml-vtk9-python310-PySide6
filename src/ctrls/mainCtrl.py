@@ -43,14 +43,9 @@ class MainCtrl(QObject):
         self.__hp.addRenderer()
         self.__hp.render()
 
-        self.sigPosXChanged.connect(self.__changeRendererColorInBusinessModel)
-        self.sigPosYChanged.connect(self.__changeRendererColorInBusinessModel)
-
         self.__businessModel.sigVisualCylinderChanged.connect(
             self.__updateCylinderVisibility
         )
-        self.__businessModel.sigPolyDataColorChanged.connect(self.__updatePolyDataColor)
-        self.__businessModel.sigRendererColorChanged.connect(self.__updateRendererColor)
 
     # * Property
     def getPosX(self):
@@ -98,22 +93,6 @@ class MainCtrl(QObject):
         newVal = not self.__businessModel.getVisualCylinder()
         self.__businessModel.setVisualCylinder(newVal)
 
-    @Slot(int, int, int)
-    def setModelColor(self, r: int, g: int, b: int):
-        newVal = (r, g, b)
-        newVal = [i / 255 for i in newVal]
-        self.__businessModel.setPolyDataColor(newVal)
-
-    # * Private
-    def __changeRendererColorInBusinessModel(self):
-        temp = (self.posX + self.posY) / 2
-        newVal = (self.posX, self.posY, temp)
-        summ = sum(newVal)
-        if summ != 0:
-            summ = 1
-        color = [i / (sum(newVal)) for i in newVal]
-        self.__businessModel.setRendererColor(color)
-
     def __updateCylinderVisibility(self, val: bool):
         self.__hp.updateCylinderVisibility(val)
         if val:
@@ -121,10 +100,3 @@ class MainCtrl(QObject):
         self.__hp.focusCamera()
         self.__hp.render()
 
-    def __updatePolyDataColor(self, color: tuple):
-        self.__hp.updateModelColor(color)
-        self.__hp.render()
-
-    def __updateRendererColor(self, color: tuple):
-        self.__hp.updateRendererColor(color)
-        self.__hp.render()

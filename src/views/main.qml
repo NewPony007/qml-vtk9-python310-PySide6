@@ -16,9 +16,14 @@ Window {
     Material.primary: Material.Indigo
     Material.accent: Material.LightBlue
 
+
+
+
+
     Rectangle {
         id: screenCanvasUI
         anchors.fill: parent
+        radius: 15
 
         Fbo {
             id: fbo
@@ -63,63 +68,12 @@ Window {
             id: demoBtn
             text: "Show/Hide Cylinder"
             highlighted: true
-            anchors.right: openFileButton.left
+            anchors.right: parent.right
             anchors.bottom: parent.bottom
             anchors.margins: 30
             onClicked: {
                 MainCtrl.toggleCylinder();
             }
-        }
-
-        Button {
-            id: openFileButton
-            text: "Open File"
-            highlighted: true
-            anchors.right: parent.right
-            anchors.bottom: parent.bottom
-            anchors.margins: 30
-            onClicked: {
-                fileDialog.visible = true;
-            }
-        }
-
-        SpinBox {
-            id: modelColorR
-            value: 5
-            from: 0
-            to: 255
-            stepSize: 5
-            anchors.left: parent.left
-            anchors.top: parent.top
-            anchors.leftMargin: 40
-            anchors.topMargin: 40
-            onValueChanged: setModelColor();
-        }
-
-        SpinBox {
-            id: modelColorG
-            value: 170
-            from: 0
-            to: 255
-            stepSize: 5
-            anchors.left: parent.left
-            anchors.top: modelColorR.bottom
-            anchors.leftMargin: 40
-            anchors.topMargin: 40
-            onValueChanged: setModelColor();
-        }
-
-        SpinBox {
-            id: modelColorB
-            value: 105
-            from: 0
-            to: 255
-            stepSize: 5
-            anchors.left: parent.left
-            anchors.top: modelColorG.bottom
-            anchors.leftMargin: 40
-            anchors.topMargin: 40
-            onValueChanged: setModelColor();
         }
 
         Label {
@@ -138,16 +92,6 @@ Window {
             anchors.bottom: parent.bottom
             anchors.left: parent.left
             anchors.margins: 40
-        }
-    }
-
-    FileDialog {
-        id: fileDialog
-        visible: false
-        title: "Import model"
-        nameFilters: ["Mesh files" + "(*.stl *.STL *.obj *.OBJ)", "All files" + "(*)"]
-        onAccepted: {
-            MainCtrl.openModel(fileUrl);
         }
     }
 

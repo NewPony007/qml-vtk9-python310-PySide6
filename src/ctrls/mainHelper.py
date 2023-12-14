@@ -88,10 +88,6 @@ class MainHelper(QObject):
 
     def updateModelColor(self, color: tuple):
         def config(*args, **kwargs):
-            model: PolyDataModel = self.__engine.getModel(ModelName.MESH_A)
-            if model:
-                model.setColor(color)
-
             model = self.__engine.getModel(ModelName.CYLINDER_A)
             if model:
                 model.setColor(color)
