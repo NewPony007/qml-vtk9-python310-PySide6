@@ -107,7 +107,6 @@ def setDefaultSurfaceFormat(stereoCapable):
     """
     fmt = QSurfaceFormat()
     fmt.setRenderableType(QSurfaceFormat.OpenGL)
-    fmt.setVersion(3, 2)
     fmt.setProfile(QSurfaceFormat.CoreProfile)
     fmt.setSwapBehavior(QSurfaceFormat.DoubleBuffer)
     fmt.setRedBufferSize(8)

@@ -6,7 +6,7 @@ from src.utils import *
 import vtk
 
 
-class MainHelper(QObject):
+class RenderingHelper(QObject):
     """
     'Talk' with Graphical Render Engine through Command pattern
     """
@@ -48,16 +48,6 @@ class MainHelper(QObject):
 
             self.__fbo.addRenderer(rendererModel.model)
             self.__engine.registerModel(rendererModel)
-
-        cmd = Cmd(callback=config)
-        self.__fbo.addCommand(cmd)
-
-    def addMesh(self, modelPath: QUrl):
-        def config(*args, **kwargs):
-            meshModel = MeshModel(ModelName.MESH_A, modelPath)
-            rendererModel: RendererModel = self.__engine.getModel(ModelName.BASE)
-            rendererModel.addActor(meshModel.actor)
-            self.__engine.registerModel(meshModel)
 
         cmd = Cmd(callback=config)
         self.__fbo.addCommand(cmd)

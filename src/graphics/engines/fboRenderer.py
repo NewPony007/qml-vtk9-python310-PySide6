@@ -23,7 +23,7 @@ class FboRenderer(QQuickFramebufferObject.Renderer, QObject):
     def __init__(self):
         super(FboRenderer, self).__init__()
         self.commandQueue = Queue()
-        print("FboRender init {}, size: {}".format(self.commandQueue, self.commandQueue.qsize()))
+        print("FboRender::init {}".format(self.commandQueue))
         self.commandQueueLock = Lock()
 
         self.rw = vtk.vtkGenericOpenGLRenderWindow()
@@ -94,10 +94,8 @@ class FboRenderer(QQuickFramebufferObject.Renderer, QObject):
 
     def render(self):
         print("FboRenderer::render")
-        self.rw.SetReadyForRendering(True)
-        self.rw.SetIsCurrent(True)
         if not self.__isOpenGLStateInitialized:
-
+            print("not inititialized")
             self.__openGLInitState()
             self.__isOpenGLStateInitialized = True
 
@@ -122,7 +120,8 @@ class FboRenderer(QQuickFramebufferObject.Renderer, QObject):
 
     def __openGLInitState(self):
         self.rw.OpenGLInitState()
-        self.rw.MakeCurrent()
+        # self.rw.MakeCurrent() #=> not working
+        self.rw.SetIsCurrent(True)
         self.__glFunc.initializeOpenGLFunctions()
         self.__glFunc.glUseProgram(0)
 
@@ -141,14 +140,14 @@ class FboRenderer(QQuickFramebufferObject.Renderer, QObject):
                 self.rwi.LeftButtonPressEvent()
             elif event.button() == Qt.RightButton:
                 self.rwi.RightButtonPressEvent()
-            elif event.button() == Qt.MidButton:
+            elif event.button() == Qt.MiddleButton:
                 self.rwi.MiddleButtonPressEvent()
         elif event.type() == QEvent.MouseButtonRelease:
             if event.button() == Qt.LeftButton:
                 self.rwi.LeftButtonReleaseEvent()
             elif event.button() == Qt.RightButton:
                 self.rwi.RightButtonReleaseEvent()
-            elif event.button() == Qt.MidButton:
+            elif event.button() == Qt.MiddleButton:
                 self.rwi.MiddleButtonReleaseEvent()
 
     def __processMouseMoveEvent(self, event: QMouseEvent):

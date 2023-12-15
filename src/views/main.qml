@@ -1,11 +1,13 @@
 import QtQuick
+import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Dialogs
 import QtQuick.Window
 import QtQuick.Controls.Material
-import QmlVtk 1.0
+// import QmlVtk 1.0
 
-Window {
+
+ApplicationWindow {
     id: root
     objectName: 'MainView'
     minimumWidth: 1024
@@ -17,85 +19,69 @@ Window {
     Material.accent: Material.LightBlue
 
 
-
-
-
-    Rectangle {
-        id: screenCanvasUI
+    RowLayout {
         anchors.fill: parent
-        radius: 15
+        spacing: 0
 
-        Fbo {
-            id: fbo
-            objectName: "fbo"
-            anchors.fill: parent
+        Rectangle {
+            id: menu
+            Layout.preferredWidth: 120
+            Layout.fillHeight: true
+            height: parent.height
+            color: "grey"
 
-            MouseArea {
+            ColumnLayout{
+                spacing: 10
+                width: parent.width
+
+                Button {
+                    id: main
+                    text: "start"
+                    Layout.fillWidth: true
+                    Layout.margins: 10
+                    onClicked: stack.push("qrc:/start.qml")
+                }
+
+                Button {
+                    id: render
+                    text: "render"
+                    Layout.fillWidth: true
+                    Layout.margins: 10
+                    onClicked: stack.push("qrc:/rendering.qml")
+                }
+            }
+        }
+
+
+        Rectangle {
+            id: content
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            color: "plum"
+
+            StackView {
+                id: stack
+                initialItem: mainView
                 anchors.fill: parent
-                acceptedButtons: Qt.AllButtons
-                propagateComposedEvents: true
-
-                onPressed: (mouse) => {
-                    mouse.accepted = true;
-                    this.parent.onMousePressed(
-                        mouse.x, mouse.y, mouse.button,
-                        mouse.buttons, mouse.modifiers);
-                    MainCtrl.showPos(mouse.buttons, mouseX, mouseY);
-                }
-
-                onPositionChanged: (mouse) => {
-                    this.parent.onMouseMove(mouse.x, mouse.y, mouse.button,
-                                            mouse.buttons, mouse.modifiers);
-                    MainCtrl.showPos(mouse.buttons, mouseX, mouseY);
-                }
-
-                onWheel: (wheel) => {
-                    this.parent.onMouseWheel(wheel.angleDelta, wheel.buttons,
-                                     wheel.inverted, wheel.modifiers,
-                                     wheel.pixelDelta, wheel.x, wheel.y);
-
-                    if (wheel.angleDelta.y < 0){
-                        modelColorR.value -= 10;
-                    }
-                    else {
-                        modelColorR.value += 10;
-                    }
-                }
             }
-        }
-
-        Button {
-            id: demoBtn
-            text: "Show/Hide Cylinder"
-            highlighted: true
-            anchors.right: parent.right
-            anchors.bottom: parent.bottom
-            anchors.margins: 30
-            onClicked: {
-                MainCtrl.toggleCylinder();
-            }
-        }
-
-        Label {
-            id: posX
-            text: "X: " + MainCtrl.posX
-            font.pixelSize: 16
-            anchors.bottom: posY.top
-            anchors.left: parent.left
-            anchors.margins: 40
-        }
-
-        Label {
-            id: posY
-            text: "Y: " + MainCtrl.posY
-            font.pixelSize: 16
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            anchors.margins: 40
         }
     }
 
-    function setModelColor() {
-        MainCtrl.setModelColor(modelColorR.value, modelColorG.value, modelColorB.value);
+    Item {
+        id: mainView
+
+        Rectangle {
+            anchors.fill: parent
+            color: "lightblue"
+
+            Label {
+                id: startText
+                anchors.centerIn: parent
+                text: MainCtrl.stackViewTxt
+                font.pixelSize: 22
+                color: "steelblue"
+            }
+        }
     }
+
 }

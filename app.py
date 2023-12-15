@@ -9,8 +9,8 @@ from PySide6.QtQml import QQmlApplicationEngine, qmlRegisterType
 from PySide6.QtWidgets import QApplication
 import vtk
 
+from src.ctrls.mainCtrl import MainCtrl
 from src.graphics.engines import Fbo
-from src.ctrls import MainCtrl
 from src.utils import *
 
 logging.basicConfig(filename="log.ini", level=logging.DEBUG)
@@ -47,14 +47,15 @@ class App(QApplication):
         super(App, self).__init__(sys_argv)
         self.engine = QQmlApplicationEngine()
         self.__mainCtrl = MainCtrl(self.engine)
+        self.engine.load(QUrl.fromLocalFile(f":/main.qml"))
 
-    def setup(self):
-        mainView = getQmlObject(self.engine, "MainView")
-        if mainView.property("active"):
-            print("MainView active")
-            self.__mainCtrl.setup()
-        else:
-            QTimer.singleShot(0, self.setup)
+    # def setup(self):
+    #     mainView = getQmlObject(self.engine, "MainView")
+    #     if mainView.property("active"):
+    #         print("MainView active")
+    #         self.__mainCtrl.setup()
+    #     else:
+    #         QTimer.singleShot(0, self.setup)
 
 
 def main():
@@ -69,7 +70,7 @@ def main():
         return
 
     #! Make sure MainView is active --> FboRenderer is created
-    QTimer.singleShot(0, app.setup)
+    # QTimer.singleShot(0, app.setup)
     sys.exit(app.exec())
 
 

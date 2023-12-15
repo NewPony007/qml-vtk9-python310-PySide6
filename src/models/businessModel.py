@@ -15,7 +15,7 @@ class BusinessModel(QObject, metaclass=SingletonQObjectMeta):
         super().__init__()
 
         self.__visualCylinder = False
-        self.__rendererColor = [0, 0, 0]
+        self.__rendererColor = [50/255, 168/255, 82/255]
         self.__polyDataColor = [10/255, 100/255, 180/255]
 
     def getVisualCylinder(self) -> bool:
@@ -37,7 +37,3 @@ class BusinessModel(QObject, metaclass=SingletonQObjectMeta):
     def getPolyDataColor(self) -> bool:
         return self.__polyDataColor
 
-    def setPolyDataColor(self, val: bool):
-        if self.__polyDataColor != val:
-            self.__polyDataColor = val
-            self.sigPolyDataColorChanged.emit(val)

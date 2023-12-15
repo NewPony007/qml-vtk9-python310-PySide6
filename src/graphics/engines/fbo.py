@@ -18,7 +18,7 @@ from src.utils import *
 class Fbo(QQuickFramebufferObject):
     def __init__(self):
         super().__init__()
-        print("Fbo init")
+        print("Fbo::init")
         self.__fboRenderer: engines.FboRenderer = None
 
         self.lastMouseButtonEvent: QMouseEvent = None
@@ -45,7 +45,8 @@ class Fbo(QQuickFramebufferObject):
         self.__fboRenderer.rwi.Start()
 
     def createRenderer(self) -> QQuickFramebufferObject.Renderer:
-        self.__fboRenderer = engines.FboRenderer()
+        if not self.__fboRenderer:
+            self.__fboRenderer = engines.FboRenderer()
         return self.__fboRenderer
 
     def addCommand(self, command: "commands.Command"):
@@ -77,6 +78,10 @@ class Fbo(QQuickFramebufferObject):
         self.lastWheelEvent.ignore()
         event.accept()
         self.update()
+
+    @Slot()
+    def onCompleted(self):
+        print("Fbo::onCompleted")
 
     @Slot(float, float, int, int, int)
     def onMousePressed(
