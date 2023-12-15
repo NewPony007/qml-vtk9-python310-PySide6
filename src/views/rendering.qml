@@ -6,6 +6,8 @@ import QmlVtk 1.0
 
 
 Item {
+    property int stackIndex: 2
+
     Component.onCompleted: RenderingCtrl.contentLoaded()
 
     Rectangle {

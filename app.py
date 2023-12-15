@@ -49,14 +49,6 @@ class App(QApplication):
         self.__mainCtrl = MainCtrl(self.engine)
         self.engine.load(QUrl.fromLocalFile(f":/main.qml"))
 
-    # def setup(self):
-    #     mainView = getQmlObject(self.engine, "MainView")
-    #     if mainView.property("active"):
-    #         print("MainView active")
-    #         self.__mainCtrl.setup()
-    #     else:
-    #         QTimer.singleShot(0, self.setup)
-
 
 def main():
     registerCustomQml()

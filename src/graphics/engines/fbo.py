@@ -28,8 +28,6 @@ class Fbo(QQuickFramebufferObject):
         self.setAcceptedMouseButtons(Qt.AllButtons)
         self.setMirrorVertically(True)
 
-
-
     def render(self):
         print("Fbo::render")
         self.__fboRenderer.rwi.Render()
@@ -51,7 +49,6 @@ class Fbo(QQuickFramebufferObject):
 
     def addCommand(self, command: "commands.Command"):
         with self.__fboRenderer.commandQueueLock:
-            # print(command)
             self.__fboRenderer.commandQueue.put(command)
         self.update()
 

@@ -113,7 +113,6 @@ class FboRenderer(QQuickFramebufferObject.Renderer, QObject):
         with self.commandQueueLock:
             while not self.commandQueue.empty():
                 cmd = self.commandQueue.get()
-                # print(cmd)
                 cmd.execute()
 
         # self.__fbo.window().resetOpenGLState()

@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 
 Item {
+    property int stackIndex: 1
 
     Rectangle {
         anchors.fill: parent

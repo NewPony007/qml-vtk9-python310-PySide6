@@ -18,6 +18,27 @@ ApplicationWindow {
     Material.primary: Material.Indigo
     Material.accent: Material.LightBlue
 
+    function pushExistingViewToStack(url) {
+
+                var stackObj = Qt.createComponent(url).createObject()
+                var newStackIndex = stackObj.stackIndex
+                console.log(newStackIndex)
+
+                for(var i=0; i < stack.children.length; i++)
+                {
+                    var item = stack.get(i);
+                    console.log(item.stackIndex);
+
+                    if (item.stackIndex === newStackIndex) {
+                        stack.replace(item)
+                        console.log("found")
+                        return
+                    }
+                }
+                console.log("not found found")
+                stack.push(stackObj)
+        }
+
 
     RowLayout {
         anchors.fill: parent
@@ -30,6 +51,12 @@ ApplicationWindow {
             height: parent.height
             color: "grey"
 
+            property start myStart;
+            property rendering myRendering
+
+            // property item start = Qt.createComponent("qrc:/start.qml").createObject()
+            // var rendering = Qt.createComponent("qrc:/rendering.qml").createObject()
+
             ColumnLayout{
                 spacing: 10
                 width: parent.width
@@ -39,7 +66,10 @@ ApplicationWindow {
                     text: "start"
                     Layout.fillWidth: true
                     Layout.margins: 10
-                    onClicked: stack.push("qrc:/start.qml")
+                    onClicked: {
+                        stack.replace("qrc:/start.qml")
+                        // pushExistingViewToStack("qrc:/start.qml")
+                    }
                 }
 
                 Button {
@@ -47,7 +77,10 @@ ApplicationWindow {
                     text: "render"
                     Layout.fillWidth: true
                     Layout.margins: 10
-                    onClicked: stack.push("qrc:/rendering.qml")
+                    onClicked: {
+                        stack.replace("qrc:/rendering.qml")
+                        // pushExistingViewToStack("qrc:/rendering.qml")
+                    }
                 }
             }
         }
@@ -69,6 +102,7 @@ ApplicationWindow {
 
     Item {
         id: mainView
+        property int stackIndex: 0
 
         Rectangle {
             anchors.fill: parent

@@ -37,9 +37,10 @@ class RenderingCtrl(QObject):
     def createRenderer(self):
         print("RenderingCtrl::createRenderer")
         self.__fbo = getQmlObject(self.__engine, "fbo")
-        self.__fbo.createRenderer()
-        self.__hp = RenderingHelper(self.__procEngine, self.__fbo)
-        self.__businessModel = BusinessModel()
+        if self.__fbo is not None:
+            self.__fbo.createRenderer()
+            self.__hp = RenderingHelper(self.__procEngine, self.__fbo)
+            self.__businessModel = BusinessModel()
 
     def setup(self):
         print("RenderingCtrl::setup")
@@ -54,8 +55,11 @@ class RenderingCtrl(QObject):
         self.__businessModel.sigVisualCylinderChanged.connect(
             self.__updateCylinderVisibility
         )
+        self.__businessModel.setVisualCylinder(False)
 
         self.__businessModel.sigRendererColorChanged.connect(self.__updateRendererColor)
+
+
 
     def getPosX(self):
         return self.__posX
