@@ -93,6 +93,8 @@ class FboRenderer(QQuickFramebufferObject.Renderer, QObject):
             self.__fbo.lastWheelEvent.accept()
 
     def render(self):
+        self.rw.SetReadyForRendering(True)
+        self.rw.SetIsCurrent(True)
         print("FboRenderer::render")
         if not self.__isOpenGLStateInitialized:
             print("not inititialized")

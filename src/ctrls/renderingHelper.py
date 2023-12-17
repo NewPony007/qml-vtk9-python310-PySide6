@@ -13,6 +13,7 @@ class RenderingHelper(QObject):
 
     def __init__(self, engine: ProcessingEngine, fbo: Fbo):
         super().__init__()
+        print("RenderingHelper::init")
         self.__engine = engine
         self.__fbo = fbo
 
@@ -53,6 +54,7 @@ class RenderingHelper(QObject):
         self.__fbo.addCommand(cmd)
 
     def updateCylinderVisibility(self, visible: bool):
+        print("renderingHelper::updateCylinderVisibility {}".format(visible))
         def config(*args, **kwargs):
             if visible:
                 cylinderModel = CylinderModel(ModelName.CYLINDER_A)
