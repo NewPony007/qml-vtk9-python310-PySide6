@@ -78,7 +78,8 @@ class Fbo(QQuickFramebufferObject):
 
     @Slot()
     def onCompleted(self):
-        print("Fbo::onCompleted")
+        # print("Fbo::onCompleted")
+        pass
 
     @Slot(float, float, int, int, int)
     def onMousePressed(

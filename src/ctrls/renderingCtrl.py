@@ -57,6 +57,8 @@ class RenderingCtrl(QObject):
 
         self.__businessModel.sigRendererColorChanged.connect(self.__updateRendererColor)
 
+        self.__businessModel.sigVisualCylinderChanged.emit(self.__businessModel.getVisualCylinder())
+
 
 
     def getPosX(self):
