@@ -63,6 +63,7 @@ class RenderingCtrl(QObject):
 
         self.__businessModel.sigVisualCylinderChanged.emit(self.__businessModel.getVisualCylinder())
 
+
     def disconnectSignals(self):
         print("RenderingCtrl::disconnectSignals")
         self.disconnect(self)
