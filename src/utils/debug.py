@@ -1,6 +1,11 @@
+import multiprocessing
 import os
 import traceback
-
+import sys
+import logging
+logger = logging.getLogger(__name__)
+handler = logging.StreamHandler(stream=sys.stdout)
+logger.addHandler(handler)
 
 def exceptHook(errType, errMsg, errTraceback):
     error = dict()

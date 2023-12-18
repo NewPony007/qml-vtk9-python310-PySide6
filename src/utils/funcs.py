@@ -118,4 +118,6 @@ def setDefaultSurfaceFormat(stereoCapable):
     fmt.setStereo(stereoCapable)
     fmt.setSamples(0)
 
+
+
     return fmt

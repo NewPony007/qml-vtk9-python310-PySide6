@@ -7,8 +7,8 @@ from PySide6.QtCore import (
     Qt,
     Slot,
 )
-from PySide6.QtGui import QMouseEvent, QWheelEvent
-from PySide6.QtQuick import QQuickFramebufferObject
+from PySide6.QtGui import QMouseEvent, QWheelEvent, QOpenGLContext
+from PySide6.QtQuick import QQuickFramebufferObject, QQuickItem
 
 import vtk
 from src.graphics import engines
@@ -28,9 +28,35 @@ class Fbo(QQuickFramebufferObject):
         self.setAcceptedMouseButtons(Qt.AllButtons)
         self.setMirrorVertically(True)
 
+        self.setAcceptHoverEvents(True)
+        self.setAcceptTouchEvents(True)
+        self.setAcceptedMouseButtons(Qt.MouseButton.AllButtons)
+
+        self.setFlag(QQuickItem.Flag.ItemIsFocusScope)
+        self.setFlag(QQuickItem.Flag.ItemHasContents)
+
     def render(self):
         print("Fbo::render")
+        self.window().beginExternalCommands()
+
+        # self.__fboRenderer.rw.SetReadyForRendering(True)
+        # self.__fboRenderer.rw.SetIsCurrent(True)
+
+        ostate = self.__fboRenderer.rw.GetState()
+        ostate.Reset()
+        ostate.Push()
+        # ostate.vtkglDepthFunc()
+        self.__fboRenderer.rw.SetReadyForRendering(True)
+        self.__fboRenderer.rw.SetIsCurrent(True)
+        self.__fboRenderer.rwi.ProcessEvents()
         self.__fboRenderer.rwi.Render()
+
+        self.__fboRenderer.rw.SetReadyForRendering(False)
+        ostate.Pop()
+
+        # self.__fboRenderer.rwi.Render()
+
+        self.window().endExternalCommands()
 
     def addRenderer(self, renderer: vtk.vtkRenderer):
         self.__fboRenderer.rw.AddRenderer(renderer)

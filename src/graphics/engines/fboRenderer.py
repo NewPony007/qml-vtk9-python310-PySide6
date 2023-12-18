@@ -10,7 +10,7 @@ from PySide6.QtGui import (
     QWheelEvent, QOpenGLContext,
 )
 from PySide6.QtOpenGL import QOpenGLFramebufferObject, QOpenGLFramebufferObjectFormat
-from PySide6.QtQuick import QQuickFramebufferObject
+from PySide6.QtQuick import QQuickFramebufferObject, QQuickItem
 from PySide6.QtWidgets import QApplication
 
 import vtk
@@ -31,20 +31,21 @@ class FboRenderer(QQuickFramebufferObject.Renderer, QObject):
         # The purpose of using vtkExternalOpenGLRenderWindow is
         # to use vtkGPUVolumeRayCastMapper with vtkVolume
         # self.rw = vtk.vtkExternalOpenGLRenderWindow()
-        self.rwi = vtk.vtkGenericRenderWindowInteractor()
-        # self.rwi = QVTKRenderWindowInteractor()
+        # self.rwi = vtk.vtkGenericRenderWindowInteractor()
+        self.rwi = QVTKRenderWindowInteractor()
         self.rwi.SetRenderWindow(self.rw)
 
-        # self.rw.SetReadyForRendering(True)
+        self.rw.SetMultiSamples(0)
+        self.rw.SetReadyForRendering(False)
+        self.rw.SetFrameBlitModeToNoBlit()
+        #...
+        # self.rw.SetReadyForRendering(False)
         # self.rw.GetInteractor().Initialize()
         # self.rw.SetMapped(True)
         # self.rw.SetIsCurrent(True)
         # self.rw.SetForceMaximumHardwareLineWidth(1)
         # self.rw.SetOwnContext(False)
-        # self.rw.Initialize()
-        # qs = QSize(400, 400)
-        # self.createFramebufferObject(qs)
-        # self.rw.OpenGLInitContext()
+
 
         self.__glFunc = QOpenGLFunctions()
         self.__isOpenGLStateInitialized = False
@@ -60,6 +61,14 @@ class FboRenderer(QQuickFramebufferObject.Renderer, QObject):
         glFormat = QOpenGLFramebufferObjectFormat()
         glFormat.setAttachment(QOpenGLFramebufferObject.CombinedDepthStencil)
         self.__openGLFbo = QOpenGLFramebufferObject(size, glFormat)
+
+        self.rw.SetReadyForRendering(False)
+        self.rw.GetInteractor().Initialize()
+        self.rw.SetMapped(True)
+        self.rw.SetIsCurrent(True)
+        self.rw.SetForceMaximumHardwareLineWidth(1)
+        self.rw.SetOwnContext(False)
+
         self.rw.OpenGLInitContext()
         return self.__openGLFbo
 
@@ -93,8 +102,7 @@ class FboRenderer(QQuickFramebufferObject.Renderer, QObject):
             self.__fbo.lastWheelEvent.accept()
 
     def render(self):
-        self.rw.SetReadyForRendering(True)
-        self.rw.SetIsCurrent(True)
+
         print("FboRenderer::render")
         if not self.__isOpenGLStateInitialized:
             print("not inititialized")
@@ -117,6 +125,7 @@ class FboRenderer(QQuickFramebufferObject.Renderer, QObject):
                 cmd = self.commandQueue.get()
                 cmd.execute()
 
+        # self.rw.ReleaseGraphicsResources(self.rw)
         # self.__fbo.window().resetOpenGLState()
 
     def __openGLInitState(self):
