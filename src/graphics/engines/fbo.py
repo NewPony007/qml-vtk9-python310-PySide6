@@ -28,6 +28,7 @@ class Fbo(QQuickFramebufferObject):
         self.setAcceptedMouseButtons(Qt.AllButtons)
         self.setMirrorVertically(True)
 
+
     def render(self):
         print("Fbo::render")
         self.__fboRenderer.rwi.Render()
@@ -75,10 +76,6 @@ class Fbo(QQuickFramebufferObject):
         self.lastWheelEvent.ignore()
         event.accept()
         self.update()
-
-    @Slot()
-    def onCompleted(self):
-        print("Fbo::onCompleted")
 
     @Slot(float, float, int, int, int)
     def onMousePressed(

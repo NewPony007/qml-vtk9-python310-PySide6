@@ -10,6 +10,15 @@ Item {
 
     Component.onCompleted: RenderingCtrl.contentLoaded()
 
+    StackView.onActivated: {
+        // canvasLoader.sourceComponent = root.fbo
+        RenderingCtrl.onStackViewActivated()
+    }
+
+    StackView.onDeactivated: {
+        RenderingCtrl.onStackViewDeactivated()
+    }
+
     Rectangle {
         anchors.fill: parent
         color: "salmon"
@@ -35,11 +44,22 @@ Item {
 
                radius: 15
 
+
+
+
+           //     Loader {
+           //       // Explicitly set the size of the
+           //       // Loader to the parent item's size
+           //       id: canvasLoader
+           //       anchors.fill: parent
+           //       // sourceComponent: root.fbo
+
+           // }
+
                 Fbo {
                    id: fbo
                    objectName: "fbo"
                    anchors.fill: parent
-                   Component.onCompleted: onCompleted()
 
                    MouseArea {
                        anchors.fill: parent

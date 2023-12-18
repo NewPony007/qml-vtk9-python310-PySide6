@@ -36,6 +36,7 @@ class RenderingCtrl(QObject):
 
     def createRenderer(self):
         print("RenderingCtrl::createRenderer")
+        # if self.__fbo is None:
         self.__fbo = getQmlObject(self.__engine, "fbo")
         self.__fbo.createRenderer()
         self.__hp = RenderingHelper(self.__procEngine, self.__fbo)
@@ -48,16 +49,24 @@ class RenderingCtrl(QObject):
         self.__hp.updateRendererColor(self.__businessModel.getRendererColor())
         self.__hp.render()
 
+        self.connectSignals()
+
+    def connectSignals(self):
+        print("RenderingCtrl::connectSignals")
         self.sigPosXChanged.connect(self.__changeRendererColorInBusinessModel)
         self.sigPosYChanged.connect(self.__changeRendererColorInBusinessModel)
 
         self.__businessModel.sigVisualCylinderChanged.connect(
             self.__updateCylinderVisibility
         )
-
         self.__businessModel.sigRendererColorChanged.connect(self.__updateRendererColor)
 
+        self.__businessModel.sigVisualCylinderChanged.emit(self.__businessModel.getVisualCylinder())
 
+    def disconnectSignals(self):
+        print("RenderingCtrl::disconnectSignals")
+        self.disconnect(self)
+        self.__businessModel.disconnect(self)
 
     def getPosX(self):
         return self.__posX
@@ -79,7 +88,25 @@ class RenderingCtrl(QObject):
 
     posY = Property(float, fget=getPosY, fset=setPosY, notify=sigPosYChanged)
 
-    # * Slot
+    @Slot()
+    def contentLoaded(self):
+        print("RenderingCtrl::contentLoaded")
+        # if self.__fbo is None:
+        # self.createRenderer()
+        # self.setup()
+
+    @Slot()
+    def onStackViewActivated(self):
+        print("RenderingCtrl::onStackViewActivated")
+        # if self.__fbo is None:
+        self.createRenderer()
+        self.setup()
+
+    @Slot()
+    def onStackViewDeactivated(self):
+        print("RenderingCtrl::onStackViewDeactivated")
+        self.disconnectSignals()
+
     @Slot(int, float, float)
     def showPos(self, buttons: int, x: float, y: float):
         self.posX = x
@@ -90,13 +117,6 @@ class RenderingCtrl(QObject):
         print("RenderingCtrl::toggleCylinder")
         newVal = not self.__businessModel.getVisualCylinder()
         self.__businessModel.setVisualCylinder(newVal)
-
-    @Slot()
-    def contentLoaded(self):
-        print("RenderingCtrl::contentLoaded")
-        # if self.__fbo is None:
-        self.createRenderer()
-        self.setup()
 
     def __updateCylinderVisibility(self, val: bool):
         self.__hp.updateCylinderVisibility(val)

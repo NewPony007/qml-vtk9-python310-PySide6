@@ -63,9 +63,10 @@ class RenderingHelper(QObject):
                 self.__engine.registerModel(cylinderModel)
             else:
                 cylinderModel = self.__engine.getModel(ModelName.CYLINDER_A)
-                rendererModel: RendererModel = self.__engine.getModel(ModelName.BASE)
-                rendererModel.removeActor(cylinderModel.actor)
-                self.__engine.removeModel(ModelName.CYLINDER_A)
+                if cylinderModel is not None:
+                    rendererModel: RendererModel = self.__engine.getModel(ModelName.BASE)
+                    rendererModel.removeActor(cylinderModel.actor)
+                    self.__engine.removeModel(ModelName.CYLINDER_A)
 
         cmd = Cmd(callback=config)
         self.__fbo.addCommand(cmd)

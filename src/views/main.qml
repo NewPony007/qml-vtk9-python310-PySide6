@@ -4,7 +4,7 @@ import QtQuick.Controls
 import QtQuick.Dialogs
 import QtQuick.Window
 import QtQuick.Controls.Material
-// import QmlVtk 1.0
+import QmlVtk 1.0
 
 
 ApplicationWindow {
@@ -18,27 +18,8 @@ ApplicationWindow {
     Material.primary: Material.Indigo
     Material.accent: Material.LightBlue
 
-    function pushExistingViewToStack(url) {
-
-                var stackObj = Qt.createComponent(url).createObject()
-                var newStackIndex = stackObj.stackIndex
-                console.log(newStackIndex)
-
-                for(var i=0; i < stack.children.length; i++)
-                {
-                    var item = stack.get(i);
-                    console.log(item.stackIndex);
-
-                    if (item.stackIndex === newStackIndex) {
-                        stack.replace(item)
-                        console.log("found")
-                        return
-                    }
-                }
-                console.log("not found found")
-                stack.push(stackObj)
-        }
-
+    property var start: Qt.createComponent("qrc:/start.qml").createObject()
+    property var rendering: Qt.createComponent("qrc:/rendering.qml").createObject()
 
     RowLayout {
         anchors.fill: parent
@@ -51,12 +32,6 @@ ApplicationWindow {
             height: parent.height
             color: "grey"
 
-            property start myStart;
-            property rendering myRendering
-
-            // property item start = Qt.createComponent("qrc:/start.qml").createObject()
-            // var rendering = Qt.createComponent("qrc:/rendering.qml").createObject()
-
             ColumnLayout{
                 spacing: 10
                 width: parent.width
@@ -67,8 +42,10 @@ ApplicationWindow {
                     Layout.fillWidth: true
                     Layout.margins: 10
                     onClicked: {
+                        // stack.pop()
+                        // stack.replace("qrc:/start.qml")
                         stack.replace("qrc:/start.qml")
-                        // pushExistingViewToStack("qrc:/start.qml")
+                        // stack.replace(root.start)
                     }
                 }
 
@@ -78,8 +55,10 @@ ApplicationWindow {
                     Layout.fillWidth: true
                     Layout.margins: 10
                     onClicked: {
+                        // stack.pop()
+                        // stack.replace("qrc:/rendering.qml")
                         stack.replace("qrc:/rendering.qml")
-                        // pushExistingViewToStack("qrc:/rendering.qml")
+                        // stack.replace(root.rendering)
                     }
                 }
             }
@@ -118,4 +97,36 @@ ApplicationWindow {
         }
     }
 
+
+    // Fbo {
+    //    id: fbo
+    //    objectName: "fbo"
+    //    anchors.fill: parent
+
+    //    MouseArea {
+    //        anchors.fill: parent
+    //        acceptedButtons: Qt.AllButtons
+    //        propagateComposedEvents: true
+
+    //        onPressed: (mouse) => {
+    //            mouse.accepted = true;
+    //            this.parent.onMousePressed(
+    //                mouse.x, mouse.y, mouse.button,
+    //                mouse.buttons, mouse.modifiers);
+    //            RenderingCtrl.showPos(mouse.buttons, mouseX, mouseY);
+    //        }
+
+    //        onPositionChanged: (mouse) => {
+    //            this.parent.onMouseMove(mouse.x, mouse.y, mouse.button,
+    //                                    mouse.buttons, mouse.modifiers);
+    //            RenderingCtrl.showPos(mouse.buttons, mouseX, mouseY);
+    //        }
+
+    //        onWheel: (wheel) => {
+    //            this.parent.onMouseWheel(wheel.angleDelta, wheel.buttons,
+    //                             wheel.inverted, wheel.modifiers,
+    //                             wheel.pixelDelta, wheel.x, wheel.y);
+    //        }
+    //    }
+    // }
 }
