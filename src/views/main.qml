@@ -18,8 +18,8 @@ ApplicationWindow {
     Material.primary: Material.Indigo
     Material.accent: Material.LightBlue
 
-    property var start: Qt.createComponent("qrc:/start.qml").createObject()
-    property var rendering: Qt.createComponent("qrc:/rendering.qml").createObject()
+    // property var start: Qt.createComponent("qrc:/start.qml").createObject()
+    // property var rendering: Qt.createComponent("qrc:/rendering.qml").createObject()
 
     RowLayout {
         anchors.fill: parent

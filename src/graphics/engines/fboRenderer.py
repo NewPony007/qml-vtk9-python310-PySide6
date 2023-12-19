@@ -123,8 +123,8 @@ class FboRenderer(QQuickFramebufferObject.Renderer, QObject):
 
     def __openGLInitState(self):
         self.rw.OpenGLInitState()
-        # self.rw.MakeCurrent() #=> not working
-        self.rw.SetIsCurrent(True)
+        self.rw.MakeCurrent() #=> not working
+        # self.rw.SetIsCurrent(True)
         self.__glFunc.initializeOpenGLFunctions()
         self.__glFunc.glUseProgram(0)
 

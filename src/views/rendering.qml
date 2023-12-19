@@ -41,13 +41,12 @@ Item {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 Layout.margins: 20
-
-               radius: 15
-
+                // radius: 15
 
 
 
-           //     Loader {
+
+               // Loader {
            //       // Explicitly set the size of the
            //       // Loader to the parent item's size
            //       id: canvasLoader

@@ -93,15 +93,15 @@ class RenderingCtrl(QObject):
     def contentLoaded(self):
         print("RenderingCtrl::contentLoaded")
         # if self.__fbo is None:
-        # self.createRenderer()
-        # self.setup()
+        self.createRenderer()
+        self.setup()
 
     @Slot()
     def onStackViewActivated(self):
         print("RenderingCtrl::onStackViewActivated")
         # if self.__fbo is None:
-        self.createRenderer()
-        self.setup()
+        # self.createRenderer()
+        # self.setup()
 
     @Slot()
     def onStackViewDeactivated(self):
