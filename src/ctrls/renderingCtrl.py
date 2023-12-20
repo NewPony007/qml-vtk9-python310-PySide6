@@ -20,52 +20,39 @@ class RenderingCtrl(QObject):
 
     def __init__(self, engine: QQmlApplicationEngine):
         super().__init__()
-        print("RenderingCtrl::init")
         self.__engine = engine
         self.__procEngine = ProcessingEngine()
 
         self.__posX = 0.0
         self.__posY = 0.0
 
-        self.__fbo = None
-        self.__hp = None
+        self.__fbo: Fbo = None
+        self.__hp: RenderingHelper = None
         self.__businessModel = BusinessModel()
 
         ctxt = self.__engine.rootContext()
         ctxt.setContextProperty("RenderingCtrl", self)
 
     def createRenderer(self):
-        print("RenderingCtrl::createRenderer")
-        # if self.__fbo is None:
         self.__fbo = getQmlObject(self.__engine, "fbo")
         self.__fbo.createRenderer()
         self.__hp = RenderingHelper(self.__procEngine, self.__fbo)
 
 
-    def setup(self):
-        print("RenderingCtrl::setup")
+    def setupHelper(self):
         self.__hp.addInteractorStyle()
         self.__hp.addRenderer()
         self.__hp.updateRendererColor(self.__businessModel.getRendererColor())
         self.__hp.render()
 
-        self.connectSignals()
-
     def connectSignals(self):
-        print("RenderingCtrl::connectSignals")
         self.sigPosXChanged.connect(self.__changeRendererColorInBusinessModel)
         self.sigPosYChanged.connect(self.__changeRendererColorInBusinessModel)
 
-        self.__businessModel.sigVisualCylinderChanged.connect(
-            self.__updateCylinderVisibility
-        )
+        self.__businessModel.sigVisualCylinderChanged.connect(self.__updateCylinderVisibility)
         self.__businessModel.sigRendererColorChanged.connect(self.__updateRendererColor)
 
-        self.__businessModel.sigVisualCylinderChanged.emit(self.__businessModel.getVisualCylinder())
-
-
     def disconnectSignals(self):
-        print("RenderingCtrl::disconnectSignals")
         self.disconnect(self)
         self.__businessModel.disconnect(self)
 
@@ -91,21 +78,19 @@ class RenderingCtrl(QObject):
 
     @Slot()
     def contentLoaded(self):
-        print("RenderingCtrl::contentLoaded")
-        # if self.__fbo is None:
         self.createRenderer()
-        self.setup()
+        self.setupHelper()
+        self.connectSignals()
+
+        self.__updateCylinderVisibility(self.__businessModel.getVisualCylinder())
+        self.__restoreCameraPosition(self.__businessModel.getCameraPosition())
 
     @Slot()
     def onStackViewActivated(self):
-        print("RenderingCtrl::onStackViewActivated")
-        # if self.__fbo is None:
-        # self.createRenderer()
-        # self.setup()
+        pass
 
     @Slot()
     def onStackViewDeactivated(self):
-        print("RenderingCtrl::onStackViewDeactivated")
         self.disconnectSignals()
 
     @Slot(int, float, float)
@@ -115,16 +100,19 @@ class RenderingCtrl(QObject):
 
     @Slot()
     def toggleCylinder(self):
-        print("RenderingCtrl::toggleCylinder")
         newVal = not self.__businessModel.getVisualCylinder()
         self.__businessModel.setVisualCylinder(newVal)
+
+    @Slot()
+    def camChanged(self):
+        self.__updateCameraPosition()
 
     def __updateCylinderVisibility(self, val: bool):
         self.__hp.updateCylinderVisibility(val)
         if val:
             self.__hp.updateModelColor(self.__businessModel.getPolyDataColor())
-        self.__hp.focusCamera()
         self.__hp.render()
+
 
     def __updateRendererColor(self, color: tuple):
         self.__hp.updateRendererColor(color)
@@ -138,5 +126,12 @@ class RenderingCtrl(QObject):
             summ = 1
         color = [i / (sum(newVal)) for i in newVal]
         self.__businessModel.setRendererColor(color)
+
+    def __updateCameraPosition(self):
+        self.__hp.storeCamera(self.__businessModel.getCameraPosition())
+
+    def __restoreCameraPosition(self, camPos: tuple):
+        self.__hp.restoreCamera(camPos)
+        self.__hp.render()
 
 

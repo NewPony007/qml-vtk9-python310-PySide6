@@ -1,7 +1,8 @@
 <RCC>
     <qresource prefix="/">
-        <file>main.qml</file>
-        <file>start.qml</file>
-        <file>rendering.qml</file>
+        <file>Rendering.qml</file>
+        <file>Page1.qml</file>
+        <file>Page2.qml</file>
+        <file>App.qml</file>
     </qresource>
 </RCC>

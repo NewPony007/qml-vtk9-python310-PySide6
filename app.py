@@ -9,7 +9,9 @@ from PySide6.QtQml import QQmlApplicationEngine, qmlRegisterType
 from PySide6.QtWidgets import QApplication
 import vtk
 
-from src.ctrls.mainCtrl import MainCtrl
+from src.ctrls import RenderingCtrl
+from src.ctrls.page1Ctrl import Page1Ctrl
+from src.ctrls.page2Ctrl import Page2Ctrl
 from src.graphics.engines import Fbo
 from src.utils import *
 
@@ -46,8 +48,10 @@ class App(QApplication):
             sys_argv += ["-style", "Fusion"]  # ! MUST HAVE
         super(App, self).__init__(sys_argv)
         self.engine = QQmlApplicationEngine()
-        self.__mainCtrl = MainCtrl(self.engine)
-        self.engine.load(QUrl.fromLocalFile(f":/main.qml"))
+        self.__page1 = Page1Ctrl(self.engine)
+        self.__page2 = Page2Ctrl(self.engine)
+        self.__rendering = RenderingCtrl(self.engine)
+        self.engine.load(QUrl.fromLocalFile(f":/App.qml"))
 
 
 def main():

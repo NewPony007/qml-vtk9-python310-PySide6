@@ -6,12 +6,14 @@ import QmlVtk 1.0
 
 
 Item {
-    property int stackIndex: 2
+    property int stackIndex: 3
 
-    Component.onCompleted: RenderingCtrl.contentLoaded()
+    Component.onCompleted: {
+        console.log("completed")
+        RenderingCtrl.contentLoaded()
+    }
 
     StackView.onActivated: {
-        // canvasLoader.sourceComponent = root.fbo
         RenderingCtrl.onStackViewActivated()
     }
 
@@ -41,24 +43,14 @@ Item {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 Layout.margins: 20
-                // radius: 15
-
-
-
-
-               // Loader {
-           //       // Explicitly set the size of the
-           //       // Loader to the parent item's size
-           //       id: canvasLoader
-           //       anchors.fill: parent
-           //       // sourceComponent: root.fbo
-
-           // }
 
                 Fbo {
                    id: fbo
                    objectName: "fbo"
                    anchors.fill: parent
+                   // width: parent.width
+                   // height: parent.height
+
 
                    MouseArea {
                        anchors.fill: parent
@@ -83,13 +75,20 @@ Item {
                            this.parent.onMouseWheel(wheel.angleDelta, wheel.buttons,
                                             wheel.inverted, wheel.modifiers,
                                             wheel.pixelDelta, wheel.x, wheel.y);
+                            RenderingCtrl.camChanged()
                        }
+
+                       onReleased: RenderingCtrl.camChanged()
+
+                        onWidthChanged: { this.parent.onWindowSizeChanged() }
+                        onHeightChanged: { this.parent.onWindowSizeChanged() }
+
                    }
                 }
 
                 Label {
                    id: posX
-                   text: "X: " + RenderingCtrl.posX
+                   text: RenderingCtrl ? "X: " + RenderingCtrl.posX : "X: 0" + 0
                    font.pixelSize: 16
                    anchors.bottom: posY.top
                    anchors.left: parent.left
@@ -98,7 +97,7 @@ Item {
 
                 Label {
                    id: posY
-                   text: "Y: " + RenderingCtrl.posY
+                   text: RenderingCtrl ? "Y: " + RenderingCtrl.posY : "Y: 0" + 0
                    font.pixelSize: 16
                    anchors.bottom: parent.bottom
                    anchors.left: parent.left

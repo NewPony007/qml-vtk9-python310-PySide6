@@ -5,7 +5,7 @@ from PySide6.QtCore import (
     QPoint,
     QPointF,
     Qt,
-    Slot,
+    Slot, QRect,
 )
 from PySide6.QtGui import QMouseEvent, QWheelEvent
 from PySide6.QtQuick import QQuickFramebufferObject
@@ -18,7 +18,6 @@ from src.utils import *
 class Fbo(QQuickFramebufferObject):
     def __init__(self):
         super().__init__()
-        print("Fbo::init")
         self.__fboRenderer: engines.FboRenderer = None
 
         self.lastMouseButtonEvent: QMouseEvent = None
@@ -30,7 +29,6 @@ class Fbo(QQuickFramebufferObject):
 
 
     def render(self):
-        print("Fbo::render")
         self.__fboRenderer.rwi.Render()
 
     def addRenderer(self, renderer: vtk.vtkRenderer):
@@ -142,3 +140,15 @@ class Fbo(QQuickFramebufferObject):
         )
         self.lastWheelEvent.ignore()
         self.update()
+
+    @Slot()
+    def onWindowSizeChanged(self):
+        # print("resize")
+        pass
+        #TODO: resizing not working properly
+
+
+    # def updatePaintNode(self, arg__1, arg__2):
+    #     print("updatePaintNode")
+        # self.render()
+    # self.updatePaintNode()

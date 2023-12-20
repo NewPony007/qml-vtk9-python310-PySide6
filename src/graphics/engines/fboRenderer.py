@@ -23,7 +23,6 @@ class FboRenderer(QQuickFramebufferObject.Renderer, QObject):
     def __init__(self):
         super(FboRenderer, self).__init__()
         self.commandQueue = Queue()
-        print("FboRender::init {}".format(self.commandQueue))
         self.commandQueueLock = Lock()
 
         self.rw = vtk.vtkGenericOpenGLRenderWindow()
@@ -93,15 +92,13 @@ class FboRenderer(QQuickFramebufferObject.Renderer, QObject):
             self.__fbo.lastWheelEvent.accept()
 
     def render(self):
-
-        self.rw.SetReadyForRendering(True)
-        self.rw.SetIsCurrent(True)
-        print("FboRenderer::render")
+        # self.rw.SetReadyForRendering(True)
+        # self.rw.SetIsCurrent(True)
+        # self.rw.PushState()
+        # self.rw.Start() => HW error
         if not self.__isOpenGLStateInitialized:
-            print("not inititialized")
             self.__openGLInitState()
             self.__isOpenGLStateInitialized = True
-
         if self.__lastMouseButtonEvent and not self.__lastMouseButtonEvent.isAccepted():
             self.__processMouseButtonEvent(self.__lastMouseButtonEvent)
             self.__lastMouseButtonEvent.accept()
@@ -112,19 +109,19 @@ class FboRenderer(QQuickFramebufferObject.Renderer, QObject):
             self.__processWheelEvent(self.__lastWheelEvent)
             self.__lastWheelEvent.accept()
 
-        print("{}, size: {}".format(self.commandQueue, self.commandQueue.qsize()))
         with self.commandQueueLock:
             while not self.commandQueue.empty():
                 cmd = self.commandQueue.get()
                 cmd.execute()
 
+        # self.rw.PopState()
         # self.__fbo.resetOpenGLState()
         # QQuick. QQuickOpenGLUtils.resetOpenGLState()
 
+
     def __openGLInitState(self):
+        self.rw.SetIsCurrent(True)
         self.rw.OpenGLInitState()
-        self.rw.MakeCurrent() #=> not working
-        # self.rw.SetIsCurrent(True)
         self.__glFunc.initializeOpenGLFunctions()
         self.__glFunc.glUseProgram(0)
 

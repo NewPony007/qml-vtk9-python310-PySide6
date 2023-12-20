@@ -1,8 +1,10 @@
 import QtQuick
+import QtQuick.Layouts
 import QtQuick.Controls
+import QtQuick.Controls.Material
 
 Item {
-    property int stackIndex: 1
+    property int stackIndex: 2
 
     Rectangle {
         anchors.fill: parent
@@ -11,7 +13,7 @@ Item {
         Label {
             id: startText
             anchors.centerIn: parent
-            text: StartCtrl.stackViewTxt
+            text: Page2Ctrl.stackViewTxt
             font.pixelSize: 22
             color: "steelblue"
         }

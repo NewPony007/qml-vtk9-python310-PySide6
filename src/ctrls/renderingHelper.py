@@ -13,7 +13,6 @@ class RenderingHelper(QObject):
 
     def __init__(self, engine: ProcessingEngine, fbo: Fbo):
         super().__init__()
-        print("RenderingHelper::init")
         self.__engine = engine
         self.__fbo = fbo
 
@@ -24,10 +23,18 @@ class RenderingHelper(QObject):
         cmd = Cmd(callback=config)
         self.__fbo.addCommand(cmd)
 
-    def focusCamera(self):
+    def restoreCamera(self, cameraOrientation: dict):
         def config(*args, **kwargs):
             rendererModel: RendererModel = self.__engine.getModel(ModelName.BASE)
-            rendererModel.focusCamera()
+            rendererModel.setCamera(cameraOrientation)
+
+        cmd = Cmd(callback=config)
+        self.__fbo.addCommand(cmd)
+
+    def storeCamera(self, cameraOrientation: dict):
+        def config(*args, **kwargs):
+            rendererModel: RendererModel = self.__engine.getModel(ModelName.BASE)
+            rendererModel.storeCamera(cameraOrientation)
 
         cmd = Cmd(callback=config)
         self.__fbo.addCommand(cmd)
@@ -54,19 +61,22 @@ class RenderingHelper(QObject):
         self.__fbo.addCommand(cmd)
 
     def updateCylinderVisibility(self, visible: bool):
-        print("renderingHelper::updateCylinderVisibility {}".format(visible))
         def config(*args, **kwargs):
             if visible:
-                cylinderModel = CylinderModel(ModelName.CYLINDER_A)
                 rendererModel: RendererModel = self.__engine.getModel(ModelName.BASE)
-                rendererModel.addActor(cylinderModel.actor)
-                self.__engine.registerModel(cylinderModel)
+                cylinderModel: CylinderModel = self.__engine.getModel(ModelName.CYLINDER_A)
+                if not cylinderModel:
+                    cylinderModel = CylinderModel(ModelName.CYLINDER_A)
+                    self.__engine.registerModel(cylinderModel)
+                    rendererModel.addActor(cylinderModel.actor)
+                    rendererModel.focusCamera()
+                else:
+                    rendererModel.addActor(cylinderModel.actor)
             else:
-                cylinderModel = self.__engine.getModel(ModelName.CYLINDER_A)
-                if cylinderModel is not None:
+                if self.__engine.hasModel(ModelName.CYLINDER_A):
+                    cylinderModel = self.__engine.getModel(ModelName.CYLINDER_A)
                     rendererModel: RendererModel = self.__engine.getModel(ModelName.BASE)
                     rendererModel.removeActor(cylinderModel.actor)
-                    self.__engine.removeModel(ModelName.CYLINDER_A)
 
         cmd = Cmd(callback=config)
         self.__fbo.addCommand(cmd)

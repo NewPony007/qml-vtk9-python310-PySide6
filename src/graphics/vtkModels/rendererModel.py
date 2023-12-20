@@ -26,6 +26,30 @@ class RendererModel(VtkModel):
         self.__renderer.ResetCameraClippingRange()
         self.__renderer.ResetCamera()
 
+    def setCamera(self, cameraOrientation: dict):
+        camera = self.__renderer.GetActiveCamera()
+        try:
+            camera.SetPosition(cameraOrientation['position'])
+            camera.SetFocalPoint(cameraOrientation['focal point'])
+            camera.SetViewUp(cameraOrientation['view up'])
+            camera.SetDistance(cameraOrientation['distance'])
+            camera.SetClippingRange(cameraOrientation['clipping range'])
+        except KeyError:
+            camera.SetFocalPoint(0, 0, 0)
+            camera.SetViewUp(0, 0, 1)
+            camera.SetPosition(0, -1, 0)
+            self.__renderer.ResetCameraClippingRange()
+            self.__renderer.ResetCamera()
+
+    def storeCamera(self, cameraOrientation: dict):
+        camera = self.__renderer.GetActiveCamera()
+        cameraOrientation['position'] = camera.GetPosition()
+        cameraOrientation['focal point'] = camera.GetFocalPoint()
+        cameraOrientation['view up'] = camera.GetViewUp()
+        cameraOrientation['distance'] = camera.GetDistance()
+        cameraOrientation['clipping range'] = camera.GetClippingRange()
+        cameraOrientation['orientation'] = camera.GetOrientation()
+
     def addActor(self, actor: vtk.vtkActor):
         self.__renderer.AddActor(actor)
 
