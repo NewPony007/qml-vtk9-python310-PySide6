@@ -6,6 +6,7 @@ tempcron.txt
 *.ini
 .idea/
 rc_*.py
+.org
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
